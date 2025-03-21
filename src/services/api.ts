@@ -1,4 +1,5 @@
 import axios from 'axios'
+import { MovieDetails } from '../screens/Details'
  
 const API_KEY="9bbbf4e53b66f49f1ea086ad10c8d949"
 const API_URL="https://api.themoviedb.org/3"
@@ -66,4 +67,15 @@ export const searchMoviesService = async (search:string): Promise<Movie[]> => {
         
     }
     return []  
+}
+
+export const movieDetailsService = async (movieId: number): Promise<MovieDetails|null> =>{
+    try {
+        const response = await api.get(`/movie/${movieId}`)
+
+        return response.data
+    } catch (error) {
+        console.error(error)
+    }
+    return null
 }

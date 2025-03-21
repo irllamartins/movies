@@ -62,7 +62,6 @@ export function Home() {
     const navigation = useNavigation()
 
     const renderMoviesItem = ({ item }: { item: Movie }) => {
-        console.log("item", item.id)
         return <CardMovies
             data={item}
             onPress={() => navigation.navigate("Details", { movieId: item.id })}
