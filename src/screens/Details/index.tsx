@@ -1,10 +1,11 @@
 import { useRoute } from "@react-navigation/native";
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { movieDetailsService } from "../../services/api";
 import { ActivityIndicator, Text, TouchableOpacity, View } from "react-native";
 import { styles } from "./styles";
 import { Image } from "react-native";
 import { BookmarkSimple, CalendarBlank, CaretLeft, Clock, Star } from "phosphor-react-native";
+import { MovieContext } from "../../context/MoviesContext";
 
 export type MovieDetails = {
     id: number;
@@ -36,7 +37,6 @@ export const Details = () => {
         setLoading(true)
         const movie = await movieDetailsService(movieId)
         if (movie) {
-            //    console.log("!@",`https://image.tmdb.org/t/p/w500${movie.backdrop_path}`)
             setMovieDetails(movie)
         }
         setLoading(false)

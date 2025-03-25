@@ -1,4 +1,4 @@
-import { ActivityIndicator, FlatList, Text, TextInput, View } from "react-native"
+import { ActivityIndicator, FlatList, SafeAreaView, ScrollView, Text, TextInput, View } from "react-native"
 import { styles } from "./styles"
 import { MagnifyingGlass } from "phosphor-react-native"
 import { useEffect, useState } from "react"
@@ -6,6 +6,7 @@ import { api, listMoviesService, searchMoviesService } from "../../services/api"
 import { CardMovies } from "../../components/CardMovies"
 import { API_KEY, API_URL } from "@env"
 import { useNavigation } from "@react-navigation/native"
+import { ShowCaseMovies } from "../../components/ShowCaseMovies"
 
 interface Movie {
     id: number
@@ -73,6 +74,7 @@ export function Home() {
         <View style={styles.container}>
             <View style={styles.header}>
                 <Text style={styles.headerText}>O que você assisti hoje?</Text>
+
                 <View style={styles.containerInput}>
                     <TextInput
                         style={styles.input}
@@ -94,21 +96,40 @@ export function Home() {
                 }
             </View>
             <View>
+            <View >
+                {!search && <FlatList
+                    key={"flat_1"}
+                    data={discoveryMovies.slice(0, 10)}
+                    renderItem={({ item, index }: { item: Movie, index: number }) => {
+                        return <ShowCaseMovies
+                            data={item}
+                            position={index}
+                            onPress={() => navigation.navigate("Details", { movieId: item.id })}
+                        />
+                    }}
+                    showsHorizontalScrollIndicator={false}
+                    horizontal={true}
+                    keyExtractor={(item) => item.id.toString()}
+                    style={{minHeight:370}}
+                />}
                 <FlatList
-                    data={movieData}
+                    key={"flat_2"}
+                    data={movieData.slice(10)}
                     numColumns={3}
                     renderItem={renderMoviesItem}
                     showsVerticalScrollIndicator={false}
                     keyExtractor={(item) => item.id.toString()}
                     contentContainerStyle={{
+                        flexGrow: 1,
                         padding: 35,
                         paddingBottom: 100
                     }}
                     onEndReached={() => loadMoreData()}
                     onEndReachedThreshold={0.6}
                 />
+                 </View></View> 
                 {loading && <ActivityIndicator size={50} color='#0296e5' />}
-            </View>
+           
             <Text style={styles.footer}>"Este plicativo usa o TMDB e as APIs do TMDB, mas não é endossado, certificado ou aprovado pelo TMDB."</Text>
         </View>
     )

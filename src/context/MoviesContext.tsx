@@ -19,20 +19,24 @@ type Movie = {
 
 type MovieContextData = {
     favoriteMovies: number[]
-    allFavoriteMovies: Movie[]
+    watchLaterMovies: number[]
 
     addFavoriteMovies: (movieId: number) => void
     removeFavoriteMovies: (movieId: number) => void
-
+    addWatchLaterMovies: (movieId: number) => void
+    removeWatchLaterMovies: (movieId: number) => void
 }
 
 export const MovieContext = createContext<MovieContextData>(
     {
         favoriteMovies: [],
-        allFavoriteMovies: [],
+        watchLaterMovies: [],
 
         addFavoriteMovies: () => { },
-        removeFavoriteMovies: () => { }
+        removeFavoriteMovies: () => { },
+
+        addWatchLaterMovies: () => { },
+        removeWatchLaterMovies: () => { }
 
     }
 )
@@ -43,11 +47,16 @@ type MovieProviderProps = {
 
 export const MovieProvider = ({ children }: MovieProviderProps) => {
     const [favoriteMovies, setFavoriteMovies] = useState<number[]>([])
-    const [allFavoriteMovies, setAllFavoriteMovies] = useState<Movie[]>([])
+    const [watchLaterMovies, setWatchLaterMovies] = useState<number[]>([])
 
     useEffect(() => {
         loadFavoriteMovies()
+        loadWatchLaterMovies()
     }, [])
+    useEffect(() => {
+        console.log("list",watchLaterMovies)
+    }, [watchLaterMovies])
+
 
     const loadFavoriteMovies = async () => {
         const favoriteMoviesStoraged = await AsyncStorage.getItem("@FavoriteMovies")
@@ -55,6 +64,37 @@ export const MovieProvider = ({ children }: MovieProviderProps) => {
             setFavoriteMovies(JSON.parse(favoriteMoviesStoraged))
         }
     }
+    const loadWatchLaterMovies = async () => {
+        const watchLaterMoviesStoraged = await AsyncStorage.getItem("@WatchLaterMovies")
+        if (watchLaterMoviesStoraged) {
+            setWatchLaterMovies(JSON.parse(watchLaterMoviesStoraged))
+        }
+    }
+    const addWatchLaterMovies = useCallback((
+        async (movieId: number) => {
+            if (!watchLaterMovies.includes(movieId)) {
+                console.log("entrou")
+                const newWatchLaterMovies = [movieId, ...watchLaterMovies]
+                setWatchLaterMovies(newWatchLaterMovies)
+                await AsyncStorage.setItem(
+                    "@WatchLaterMovies",
+                    JSON.stringify(newWatchLaterMovies)
+                )
+            }
+        }
+    ), [watchLaterMovies])
+
+    const removeWatchLaterMovies = useCallback((
+        async (movieId: number) => {   
+            const newWatchLaterMovies = watchLaterMovies.filter((id: number) => id !== movieId)
+            setWatchLaterMovies(newWatchLaterMovies)
+            await AsyncStorage.setItem(
+                "@WatchLaterMovies",
+                JSON.stringify(newWatchLaterMovies)
+            )
+        }
+    ), [watchLaterMovies])
+
     const addFavoriteMovies = useCallback((
         async (movieId: number) => {
             if (!favoriteMovies.includes(movieId)) {
@@ -81,9 +121,11 @@ export const MovieProvider = ({ children }: MovieProviderProps) => {
 
     const contextData: MovieContextData ={
         favoriteMovies,
-        allFavoriteMovies,
+        watchLaterMovies,
         addFavoriteMovies,
-        removeFavoriteMovies
+        removeFavoriteMovies,
+        addWatchLaterMovies,
+        removeWatchLaterMovies
     }
     return (
         <MovieContext.Provider value={contextData}>

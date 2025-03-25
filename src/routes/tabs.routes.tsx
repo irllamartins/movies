@@ -1,8 +1,9 @@
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
-import { BookmarkSimple, House, MagnifyingGlass } from "phosphor-react-native";
+import { BookmarkSimple, Heart, House, MagnifyingGlass } from "phosphor-react-native";
 
 import { Home } from "../screens/Home";
 import { MyList } from "../screens/MyList";
+import { Favorite } from "../screens/Favorite";
 import { Search } from "../screens/Search";
 
 const Tab = createBottomTabNavigator();
@@ -15,13 +16,13 @@ export function TabRoutes() {
           backgroundColor: "#242a32",
           height: 78,
           alignItems: "center",
-          borderTopWidth: 1,
+          borderTopWidth: 2,
           borderTopColor: "#0296e5",
         },
         headerShown: false,
         tabBarActiveTintColor: "#0296e5",
         tabBarInactiveTintColor: "#67686d",
-        tabBarShowLabel: false,
+       // tabBarShowLabel: false,
       }}
     >
       <Tab.Screen
@@ -34,13 +35,15 @@ export function TabRoutes() {
         }}
       />
 
-      {/*<Tab.Screen
-        name="Details"
-        component={Details}
+      <Tab.Screen
+        name="Favorite"
+        component={Favorite}
         options={{
-          tabBarButton: () => null,
+          tabBarIcon: ({ color }) => (
+            <Heart color={color} size={30} weight="light" />
+          )
         }}
-      />*/}
+      />
 
       <Tab.Screen
         name="MyList"

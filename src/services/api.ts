@@ -18,16 +18,14 @@ interface Movie {
     overview: string
 }
 
-export const listMoviesService = async (page:number): Promise<Movie[]> => {
-    try { 
+export const listMoviesService = async (page: number): Promise<Movie[]> => {
+    try {
 
-        const response = await api.get(`/movie/popular`,{
-            params:{
+        const response = await api.get(`/movie/popular`, {
+            params: {
                 page
             }
         })
-
-       // console.log(API_URL, "entrou", response.data.results[0])   
 
         if (response.status === 200) {
             return response.data.results
@@ -38,20 +36,18 @@ export const listMoviesService = async (page:number): Promise<Movie[]> => {
 
     } catch (error) {
         console.error("Erro:", error);
-        return []  
+        return []
     }
 }
 
 
-export const searchMoviesService = async (search:string): Promise<Movie[]> => {
-    try { 
-        const response = await api.get(`/search/movie`,{
-            params:{
-                query:search
+export const searchMoviesService = async (search: string): Promise<Movie[]> => {
+    try {
+        const response = await api.get(`/search/movie`, {
+            params: {
+                query: search
             }
         })
-
-        //console.log(API_URL, "entrou", response.data.results)   
 
         if (response.status === 200) {
             return response.data.results
@@ -61,12 +57,12 @@ export const searchMoviesService = async (search:string): Promise<Movie[]> => {
 
     } catch (error) {
         console.error("Erro:", error);
-        
+
     }
-    return []  
+    return []
 }
 
-export const movieDetailsService = async (movieId: number): Promise<MovieDetails|null> =>{
+export const movieDetailsService = async (movieId: number): Promise<MovieDetails | null> => {
     try {
         const response = await api.get(`/movie/${movieId}`)
 
@@ -75,4 +71,21 @@ export const movieDetailsService = async (movieId: number): Promise<MovieDetails
         console.error(error)
     }
     return null
+}
+export const movieFavoriteService = async (movieIds: number[]): Promise<Movie[]> => {
+
+    try {
+        const moviePromises = movieIds.map(async (movieId) => {
+            const response = await api.get(`/movie/${movieId}`);
+            return response.data; // Retorna os dados de cada filme
+        });
+
+
+        const list = await Promise.all(moviePromises); 
+
+       return list 
+    } catch (error) {
+        console.error(error)
+    }
+    return []
 }
