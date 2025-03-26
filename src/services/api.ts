@@ -1,6 +1,7 @@
 import axios from 'axios'
 import { MovieDetails } from '../screens/Details'
 import { API_KEY, API_URL } from '@env'
+import { Genres } from '../components/tabs'
 
 export const api = axios.create({
     baseURL: API_URL,
@@ -80,10 +81,35 @@ export const movieFavoriteService = async (movieIds: number[]): Promise<Movie[]>
             return response.data; // Retorna os dados de cada filme
         });
 
+        const list = await Promise.all(moviePromises);
 
-        const list = await Promise.all(moviePromises); 
+        return list
+    } catch (error) {
+        console.error(error)
+    }
+    return []
+}
 
-       return list 
+export const listGenresService = async (): Promise<Genres[]> => {
+
+    try {
+        const response = await api.get(`/genre/movie/list`);
+        return response.data['genres']
+    } catch (error) {
+        console.error(error)
+    }
+    return []
+}
+export const listMovieGenresService = async (genreId: number): Promise<Movie[]> => {
+
+    try {
+        const response = await api.get(`/movie/list`,{
+            params: {
+                with_genres: genreId
+            }
+        })
+        return response.data
+
     } catch (error) {
         console.error(error)
     }

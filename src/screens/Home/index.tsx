@@ -1,12 +1,12 @@
-import { ActivityIndicator, FlatList, SafeAreaView, ScrollView, Text, TextInput, View } from "react-native"
+import { ActivityIndicator, FlatList, Text, TextInput, View } from "react-native"
 import { styles } from "./styles"
 import { MagnifyingGlass } from "phosphor-react-native"
 import { useEffect, useState } from "react"
-import { api, listMoviesService, searchMoviesService } from "../../services/api"
+import { listGenresService, listMovieGenresService, listMoviesService, searchMoviesService } from "../../services/api"
 import { CardMovies } from "../../components/CardMovies"
-import { API_KEY, API_URL } from "@env"
 import { useNavigation } from "@react-navigation/native"
 import { ShowCaseMovies } from "../../components/ShowCaseMovies"
+import { Genres, TabsGenres } from "../../components/tabs"
 
 interface Movie {
     id: number
@@ -18,6 +18,8 @@ interface Movie {
 export function Home() {
     const [discoveryMovies, setDiscoveryMovies] = useState<Movie[]>([])
     const [searchResultMovies, setSearchResultMovies] = useState<Movie[]>([])
+    const [listGenres, setListGenres] = useState<Genres[]>([{ id: 0, name: "Todos" }])
+    const [activeGenres, setActiveGenres] = useState<Genres>({ id: 0, name: "Todos" })
     const [page, setPage] = useState<number>(1)
     const [loading, setLoading] = useState<boolean>(false)
     const [noResult, setnoResult] = useState<boolean>(false)
@@ -25,7 +27,19 @@ export function Home() {
 
     useEffect(() => {
         loadMoreData()
+        loadGenrer()
     }, [])
+
+    useEffect(() => {
+        listMoviesGenresActive()
+    }, [activeGenres, listGenres])
+
+    const listMoviesGenresActive = async () => {
+        if (activeGenres.id > 0) {
+            const listMoviesActives = await listMovieGenresService(activeGenres.id)
+            setDiscoveryMovies(listMoviesActives)
+        }
+    }
 
     const loadMoreData = async () => {
         setLoading(true)
@@ -33,6 +47,11 @@ export function Home() {
         setDiscoveryMovies([...discoveryMovies, ...response])
         setPage(page + 1)
         setLoading(false)
+    }
+
+    const loadGenrer = async () => {
+        const listGenresAPI = await listGenresService()
+        setListGenres([...listGenres, ...listGenresAPI])
     }
 
     const searchMovies = async (search: string) => {
@@ -89,47 +108,57 @@ export function Home() {
                         weight="light"
                     />
                 </View>
-                {
-                    noResult && search && <Text style={styles.noResult}>
-                        Nenhum filme encontrado "{search}"
-                    </Text>
-                }
+
             </View>
+
             <View>
-            <View >
-                {!search && <FlatList
-                    key={"flat_1"}
-                    data={discoveryMovies.slice(0, 10)}
-                    renderItem={({ item, index }: { item: Movie, index: number }) => {
-                        return <ShowCaseMovies
-                            data={item}
-                            position={index}
-                            onPress={() => navigation.navigate("Details", { movieId: item.id })}
-                        />
-                    }}
-                    showsHorizontalScrollIndicator={false}
-                    horizontal={true}
-                    keyExtractor={(item) => item.id.toString()}
-                    style={{minHeight:370}}
-                />}
-                <FlatList
-                    key={"flat_2"}
-                    data={movieData.slice(10)}
-                    numColumns={3}
-                    renderItem={renderMoviesItem}
-                    showsVerticalScrollIndicator={false}
-                    keyExtractor={(item) => item.id.toString()}
-                    contentContainerStyle={{
-                        flexGrow: 1,
-                        padding: 35,
-                        paddingBottom: 100
-                    }}
-                    onEndReached={() => loadMoreData()}
-                    onEndReachedThreshold={0.6}
-                />
-                 </View></View> 
-                {loading && <ActivityIndicator size={50} color='#0296e5' />}
-           
+                <View >
+                    {!search && <FlatList
+                        key={"flat_1"}
+                        data={discoveryMovies.slice(0, 10)}
+                        renderItem={({ item, index }: { item: Movie, index: number }) => {
+                            return <ShowCaseMovies
+                                data={item}
+                                position={index}
+                                onPress={() => navigation.navigate("Details", { movieId: item.id })}
+                            />
+                        }}
+                        showsHorizontalScrollIndicator={false}
+                        horizontal={true}
+                        keyExtractor={(item) => item.id.toString()}
+                        style={{ minHeight: 340 }}
+                    />
+                    }
+                    {
+                        !search && <TabsGenres
+                            genres={listGenres}
+                            active={activeGenres}
+                            setValue={setActiveGenres} />
+                    }
+                    <FlatList
+                        data={movieData.slice(10)}
+                        renderItem={renderMoviesItem}
+                        showsVerticalScrollIndicator={false}
+                        keyExtractor={(item) => item.id.toString()}
+                        contentContainerStyle={{
+                            padding: 35,
+                            paddingBottom: 600
+                        }}
+                        key={search ? 'vertical' : 'horizontal'} 
+                        horizontal={!search}
+                        numColumns={search ? 3 : 1} 
+                        onEndReached={() => loadMoreData()}
+                        onEndReachedThreshold={0.6}
+                    />
+                </View>
+            </View>
+            {
+                noResult && search && <Text style={styles.noResult}>
+                    Nenhum filme encontrado "{search}"
+                </Text>
+            }
+            {loading && <ActivityIndicator size={50} color='#0296e5' />}
+
             <Text style={styles.footer}>"Este plicativo usa o TMDB e as APIs do TMDB, mas não é endossado, certificado ou aprovado pelo TMDB."</Text>
         </View>
     )

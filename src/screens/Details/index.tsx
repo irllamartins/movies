@@ -6,6 +6,7 @@ import { styles } from "./styles";
 import { Image } from "react-native";
 import { BookmarkSimple, CalendarBlank, CaretLeft, Clock, Star } from "phosphor-react-native";
 import { MovieContext } from "../../context/MoviesContext";
+import { Genres } from "../../components/tabs";
 
 export type MovieDetails = {
     id: number;
@@ -16,6 +17,8 @@ export type MovieDetails = {
     runtime: string;
     release_date: string;
     vote_average: number;
+    genres: Genres[]
+
 }
 
 type RouterProps = {
@@ -49,6 +52,7 @@ export const Details = () => {
         }
         return "???"
     }
+  
     return (
         <View style={styles.container}>
             {
@@ -115,6 +119,22 @@ export const Details = () => {
                                     ? "Ops! Parece que esse filme ainda não tem sinopse :-("
                                     : movieDetails?.overview}
                             </Text>
+                        </View>
+                        <View style={styles.about}>
+                            <Text style={styles.aboutText}>Genero</Text>
+
+                            {
+                                movieDetails?.genres && movieDetails?.genres?.length > 0 ?
+                                    movieDetails.genres.map((item: Genres) => {
+                                        return (<Text style={styles.genresContainer}>
+                                            <Text>{item.name}</Text>
+                                        </Text>
+                                        )
+                                    })
+                                    : "Ops! Genero cadastrado :-("
+                            }
+
+
                         </View>
                     </>
             }

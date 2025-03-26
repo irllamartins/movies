@@ -54,7 +54,6 @@ export const MovieProvider = ({ children }: MovieProviderProps) => {
         loadWatchLaterMovies()
     }, [])
     useEffect(() => {
-        console.log("list",watchLaterMovies)
     }, [watchLaterMovies])
 
 
@@ -73,7 +72,6 @@ export const MovieProvider = ({ children }: MovieProviderProps) => {
     const addWatchLaterMovies = useCallback((
         async (movieId: number) => {
             if (!watchLaterMovies.includes(movieId)) {
-                console.log("entrou")
                 const newWatchLaterMovies = [movieId, ...watchLaterMovies]
                 setWatchLaterMovies(newWatchLaterMovies)
                 await AsyncStorage.setItem(
