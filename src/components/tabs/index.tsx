@@ -13,6 +13,7 @@ interface TabsProps {
 }
 export const TabsGenres = (props: TabsProps) => {
     const { genres, active, setValue } = props
+ 
     return (
         <ScrollView
             horizontal={true}
@@ -27,14 +28,10 @@ export const TabsGenres = (props: TabsProps) => {
                         return (
                             <TouchableOpacity
                                 style={styles.button}
-                                key={index}
+                                key={`tab_genre_${index}`}
                                 onPress={() => setValue(item)}
                             >
-                                <Text
-                                    style={
-                                         styles.text
-                                    }
-                                >{item.name}
+                                <Text style={styles.text } >{item.name}
                                 </Text>
                                 <View style={
                                     active?.id === item.id ?

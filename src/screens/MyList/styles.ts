@@ -29,15 +29,15 @@ export const styles = StyleSheet.create({
         color: "#FFF",
     },
     containerInput: {
-        flexDirection: "row", // Organiza elementos em linha
-        alignItems: "center", // Alinha verticalmente
-        justifyContent: "space-between", // Distribui os elementos
-        backgroundColor: "#676860", // Mantém o fundo
-        height: 42, // Altura do container
-        paddingHorizontal: 10, // Ajuste lateral para espaçamento
-        borderRadius: 16, // Bordas arredondadas
+        flexDirection: "row", 
+        alignItems: "center", 
+        justifyContent: "space-between", 
+        backgroundColor: "#676860", 
+        height: 42, 
+        paddingHorizontal: 10, 
+        borderRadius: 16, 
         marginTop: 24,
-        marginBottom: 28,
+        marginBottom: 2,
     },
     input: {
         color: "#fff",

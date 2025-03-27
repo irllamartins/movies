@@ -4,7 +4,6 @@ import { BookmarkSimple, Heart, House, MagnifyingGlass } from "phosphor-react-na
 import { Home } from "../screens/Home";
 import { MyList } from "../screens/MyList";
 import { Favorite } from "../screens/Favorite";
-import { Search } from "../screens/Search";
 
 const Tab = createBottomTabNavigator();
 
@@ -55,15 +54,6 @@ export function TabRoutes() {
         }}
       />
 
-      <Tab.Screen
-        name="Search"
-        component={Search}
-        options={{
-          tabBarIcon: ({ color }) => (
-            <MagnifyingGlass color={color} size={30} weight="light" />
-          )
-        }}   
-      />
     </Tab.Navigator>
   )
 }

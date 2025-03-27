@@ -76,10 +76,16 @@ export const styles = StyleSheet.create({
   genresContainer: {
     borderRadius: 16,
     padding: 5,
-    // backgroundColor: '#0296e5',
+    flexDirection: "row",
     borderColor: '#0296e5',
     borderWidth: 1,
     color: "#fff",
     margin: 2
-  }
+  },
+  underline: {
+    marginTop: 5,           
+    height: 2,            
+    backgroundColor: '#0296e5', 
+    width: '100%',     
+  },
 })

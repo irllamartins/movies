@@ -105,8 +105,7 @@ export const MyList = () => {
                 showsVerticalScrollIndicator={false}
                 keyExtractor={(item) => item.id.toString()}
                 contentContainerStyle={{
-                    padding: 35,
-                    paddingBottom: 100
+                    paddingTop: 0
                 }}
                 onEndReached={() => loadMoreData()}
                 onEndReachedThreshold={0.6}

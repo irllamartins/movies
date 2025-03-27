@@ -1,7 +1,7 @@
 import { ActivityIndicator, FlatList, Text, TextInput, View } from "react-native"
 import { styles } from "./styles"
 import { MagnifyingGlass } from "phosphor-react-native"
-import { useEffect, useState } from "react"
+import { memo, useCallback, useEffect, useRef, useState } from "react"
 import { listGenresService, listMovieGenresService, listMoviesService, searchMoviesService } from "../../services/api"
 import { CardMovies } from "../../components/CardMovies"
 import { useNavigation } from "@react-navigation/native"
@@ -25,6 +25,10 @@ export function Home() {
     const [noResult, setnoResult] = useState<boolean>(false)
     const [search, setSearch] = useState<string>('')
 
+    const navigation = useNavigation()
+    const showCaseListRef = useRef<FlatList>(null);
+    const listRef = useRef<FlatList>(null);
+
     useEffect(() => {
         loadMoreData()
         loadGenrer()
@@ -32,11 +36,21 @@ export function Home() {
 
     useEffect(() => {
         listMoviesGenresActive()
-    }, [activeGenres, listGenres])
+        resetList()
+    }, [activeGenres])
+
+    const resetList = () => {
+        // Volta para o início da lista
+        listRef.current?.scrollToOffset({ animated: true, offset: 0 });
+        showCaseListRef.current?.scrollToOffset({ animated: true, offset: 0 });
+    };
 
     const listMoviesGenresActive = async () => {
         if (activeGenres.id > 0) {
             const listMoviesActives = await listMovieGenresService(activeGenres.id)
+            setDiscoveryMovies(listMoviesActives)
+        } else {
+            const listMoviesActives = await listMoviesService(page)
             setDiscoveryMovies(listMoviesActives)
         }
     }
@@ -44,7 +58,11 @@ export function Home() {
     const loadMoreData = async () => {
         setLoading(true)
         const response = await listMoviesService(page)
-        setDiscoveryMovies([...discoveryMovies, ...response])
+
+       /* const uniqueMovies = discoveryMovies.filter((movie:Movie, index) =>
+            -1 !== response.findIndex((response:Movie) => response.id === movie.id)
+        )*/
+        setDiscoveryMovies([...discoveryMovies,...response ])
         setPage(page + 1)
         setLoading(false)
     }
@@ -79,15 +97,16 @@ export function Home() {
         }
     }
 
-    const navigation = useNavigation()
+   
+    const movieData = search.length > 2 ? searchResultMovies : discoveryMovies
 
-    const renderMoviesItem = ({ item }: { item: Movie }) => {
+    const renderMoviesItem =(({ item }: { item: Movie }) => {
         return <CardMovies
             data={item}
             onPress={() => navigation.navigate("Details", { movieId: item.id })}
-        />
-    }
-    const movieData = search.length > 2 ? searchResultMovies : discoveryMovies
+        />;
+    });
+
 
     return (
         <View style={styles.container}>
@@ -110,12 +129,17 @@ export function Home() {
                 </View>
 
             </View>
-
+            {
+                noResult && search.length > 0 && <Text style={styles.noResult}>
+                    Nenhum filme encontrado "{search}"
+                </Text>
+            }
             <View>
                 <View >
                     {!search && <FlatList
                         key={"flat_1"}
-                        data={discoveryMovies.slice(0, 10)}
+                        ref={showCaseListRef}
+                        data={discoveryMovies?.slice(0, 10)}
                         renderItem={({ item, index }: { item: Movie, index: number }) => {
                             return <ShowCaseMovies
                                 data={item}
@@ -136,30 +160,27 @@ export function Home() {
                             setValue={setActiveGenres} />
                     }
                     <FlatList
-                        data={movieData.slice(10)}
-                        renderItem={renderMoviesItem}
+                        ref={listRef}
+                        data={movieData?.slice(10)}
+                        renderItem={renderMoviesItem} 
                         showsVerticalScrollIndicator={false}
-                        keyExtractor={(item) => item.id.toString()}
+                        keyExtractor={(item,index:number) => `movie_${item.id.toString()}_${index}`}
                         contentContainerStyle={{
                             padding: 35,
                             paddingBottom: 600
                         }}
-                        key={search ? 'vertical' : 'horizontal'} 
+                        key={search ? 'vertical' : 'horizontal'}
                         horizontal={!search}
-                        numColumns={search ? 3 : 1} 
+                        numColumns={search ? 3 : 1}
                         onEndReached={() => loadMoreData()}
-                        onEndReachedThreshold={0.6}
+                        onEndReachedThreshold={0.5}
                     />
                 </View>
             </View>
-            {
-                noResult && search && <Text style={styles.noResult}>
-                    Nenhum filme encontrado "{search}"
-                </Text>
-            }
-            {loading && <ActivityIndicator size={50} color='#0296e5' />}
 
             <Text style={styles.footer}>"Este plicativo usa o TMDB e as APIs do TMDB, mas não é endossado, certificado ou aprovado pelo TMDB."</Text>
+            {loading && <ActivityIndicator size={50} color='#0296e5' />}
+
         </View>
     )
 }

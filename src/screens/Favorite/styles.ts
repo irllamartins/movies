@@ -37,7 +37,7 @@ export const styles = StyleSheet.create({
         paddingHorizontal: 10, // Ajuste lateral para espaçamento
         borderRadius: 16, // Bordas arredondadas
         marginTop: 24,
-        marginBottom: 28,
+        marginBottom: 2,
     },
     input: {
         color: "#fff",

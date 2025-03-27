@@ -1,12 +1,13 @@
-import { useRoute } from "@react-navigation/native";
-import { useContext, useEffect, useState } from "react";
-import { movieDetailsService } from "../../services/api";
-import { ActivityIndicator, Text, TouchableOpacity, View } from "react-native";
+import { useNavigation, useRoute } from "@react-navigation/native";
+import { memo, useContext, useEffect, useState } from "react";
+import { Movie, movieDetailsService, similarMovieService } from "../../services/api";
+import { ActivityIndicator, FlatList, ScrollView, Text, TouchableOpacity, View } from "react-native";
 import { styles } from "./styles";
 import { Image } from "react-native";
 import { BookmarkSimple, CalendarBlank, CaretLeft, Clock, Star } from "phosphor-react-native";
 import { MovieContext } from "../../context/MoviesContext";
 import { Genres } from "../../components/tabs";
+import { CardMovies } from "../../components/CardMovies";
 
 export type MovieDetails = {
     id: number;
@@ -27,14 +28,28 @@ type RouterProps = {
 
 export const Details = () => {
     const [movieDetails, setMovieDetails] = useState<MovieDetails | null>()
+    const [similarMovies, setSimilarMovies] = useState<Movie[]>([])
+    const [page, setPage] = useState<number>(1)
     const [loading, setLoading] = useState<boolean>(false)
 
+    const navigation = useNavigation()
     const route = useRoute()
     const { movieId } = route.params as RouterProps
 
     useEffect(() => {
         loadMovieDetails(movieId)
+        loadSimilarMovies(movieId)
     }, [movieId])
+
+    useEffect(() => {
+
+    }, [])
+
+    const loadSimilarMovies = async (movieId: number) => {
+        const response = await similarMovieService(movieId)
+        setSimilarMovies(response)
+        setPage(page + 1)
+    }
 
     const loadMovieDetails = async (movieId: number) => {
         setLoading(true)
@@ -52,13 +67,33 @@ export const Details = () => {
         }
         return "???"
     }
-  
+
+    const Item = memo(({ item }: { item: string }) => {
+        return <Text style={styles.genresContainer}>
+            <Text >{item}</Text>
+        </Text>
+    });
+
+    const renderMoviesItem = (({ item }: { item: Movie }) => {
+        return <CardMovies
+            data={item}
+            onPress={() => navigation.navigate("Details", { movieId: item.id })}
+        />;
+    });
+
+
     return (
         <View style={styles.container}>
             {
                 loading ?
                     <ActivityIndicator style={styles.loading} size="large" /> :
-                    <>
+                    <ScrollView
+                             /*   horizontal={true}
+                                contentContainerStyle={{ flexGrow: 1 }}
+                                showsHorizontalScrollIndicator={false}
+                                showsVerticalScrollIndicator={false}
+                                style={{ flex: 0 }}*/
+                            >
                         <View>
                             <Image
                                 source={{
@@ -113,7 +148,10 @@ export const Details = () => {
                             </View>
                         </View>
                         <View style={styles.about}>
-                            <Text style={styles.aboutText}>Sinopse</Text>
+                            <View>
+                                <Text style={styles.aboutText}>Sinopse</Text>
+                                <View style={styles.underline} />
+                            </View>
                             <Text style={styles.aboutText}>
                                 {movieDetails?.overview === ""
                                     ? "Ops! Parece que esse filme ainda não tem sinopse :-("
@@ -121,23 +159,43 @@ export const Details = () => {
                             </Text>
                         </View>
                         <View style={styles.about}>
-                            <Text style={styles.aboutText}>Genero</Text>
-
+                            <View >
+                                <Text style={styles.aboutText}>Genero </Text>
+                                <View style={styles.underline} />
+                            </View>
                             {
                                 movieDetails?.genres && movieDetails?.genres?.length > 0 ?
-                                    movieDetails.genres.map((item: Genres) => {
-                                        return (<Text style={styles.genresContainer}>
-                                            <Text>{item.name}</Text>
-                                        </Text>
+                                    movieDetails.genres.map((item: Genres, index: number) => {
+                                        return (
+                                            <Item item={item.name} key={index} />
                                         )
                                     })
-                                    : "Ops! Genero cadastrado :-("
+                                    : <Text >Ops! Genero cadastrado</Text>
                             }
 
-
                         </View>
-                    </>
+                        <View style={styles.about}>
+                            <View >
+                                <Text style={styles.aboutText}>Filmes similares</Text>
+                                <View style={styles.underline} />
+                            </View>
+                            <FlatList
+                                data={similarMovies}
+                                renderItem={renderMoviesItem}
+                                showsVerticalScrollIndicator={false}
+                                keyExtractor={(item, index: number) => `movie_${item.id.toString()}_${index}`}
+                                contentContainerStyle={{
+                                     paddingTop: 12,
+                                }}
+                                key={'similar'}
+                                horizontal={true}
+                                onEndReached={() => loadSimilarMovies(movieId)}
+                                onEndReachedThreshold={0.5}
+                            />
+                        </View>
+                    </ScrollView>
             }
+
         </View >
     )
 }
