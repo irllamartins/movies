@@ -1,10 +1,8 @@
 import { ScrollView, Text, TouchableOpacity, View } from "react-native"
 import { styles } from "./styles"
+import { Genres } from "../../model/movie"
 
-export interface Genres {
-    id: number
-    name: string
-}
+
 interface TabsProps {
     readonly genres: Genres[]
     readonly active: Genres | undefined

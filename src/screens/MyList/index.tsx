@@ -73,7 +73,6 @@ export const MyList = () => {
     }
     const movieData = search.length > CARACTER_MIN ?
         searchResultMovies : myListMovies
-
     return <View style={styles.container}>
         <View style={styles.header}>
             <Text style={styles.headerText}>Listas de filmes para assistir</Text>
@@ -107,8 +106,8 @@ export const MyList = () => {
                 contentContainerStyle={{
                     paddingTop: 0
                 }}
-                onEndReached={() => loadMoreData()}
-                onEndReachedThreshold={0.6}
+                 onEndReached={() => loadMoreData()}
+                 onEndReachedThreshold={0.6}
             />
             {loading && <ActivityIndicator size={50} color='#0296e5' />}
         </View>

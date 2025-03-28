@@ -97,20 +97,21 @@ export const Favorite = () => {
                 </Text>
             }
         </View>
-        <View>
-            <FlatList
-                data={movieData}
-                numColumns={3}
-                renderItem={renderMoviesItem}
-                showsVerticalScrollIndicator={false}
-                keyExtractor={(item) => item.id.toString()}
-                contentContainerStyle={{
-                    paddingTop: 0
-                }}
-                onEndReached={() => loadMoreData()}
-                onEndReachedThreshold={0.6}
-            />
-            {loading && <ActivityIndicator size={50} color='#0296e5' />}
-        </View>
+        {loading ? <ActivityIndicator size={50} color='#0296e5' /> :
+            <View>
+                <FlatList
+                    data={movieData}
+                    numColumns={3}
+                    renderItem={renderMoviesItem}
+                    showsVerticalScrollIndicator={false}
+                    keyExtractor={(item) => item.id.toString()}
+                    contentContainerStyle={{
+                        paddingTop: 0
+                    }}
+                  //  onEndReached={() => loadMoreData()}
+                   // onEndReachedThreshold={0.6}
+                />
+
+            </View>}
     </View>
 }

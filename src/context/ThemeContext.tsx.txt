@@ -1,0 +1,48 @@
+import { Theme } from '@react-navigation/native';
+import React, { createContext, useState, useContext, useCallback } from 'react';
+import { DefaultTheme, DarkTheme, } from '@react-navigation/native';
+
+
+
+// Temas definidos
+const lightTheme  = {
+    ...DefaultTheme,
+  colors: {
+    ...DefaultTheme.colors,
+    background: '#000000',
+    text: '#FFFFFF',
+    primary: '#0296e5',
+    secondary:"#FF8700"
+  },
+};
+
+const darkTheme  = {
+    ...DefaultTheme,
+  colors: {
+    ...DefaultTheme.colors,
+    background: '#000000',
+    text: '#FFFFFF',
+    primary: '#0296e5',
+    secondary:"#FF8700"
+  }
+};
+
+const ThemeContext = createContext({} as Theme)
+
+export const ThemeProvider = ({ children }: React.PropsWithChildren<{}>) => {
+    const [theme, setTheme] = useState(darkTheme);
+
+    const toggleTheme = useCallback(() => {
+        setTheme((prevTheme) =>
+            prevTheme === lightTheme ? darkTheme : lightTheme
+        );
+    }, []);
+    return (
+        <ThemeContext.Provider value={{ theme, toggleTheme }}>
+            {children}
+        </ThemeContext.Provider>
+    );
+};
+
+// Hook para acessar o tema
+export const useTheme = () => useContext(ThemeContext);

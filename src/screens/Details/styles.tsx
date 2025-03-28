@@ -76,16 +76,46 @@ export const styles = StyleSheet.create({
   genresContainer: {
     borderRadius: 16,
     padding: 5,
-    flexDirection: "row",
+    flexDirection: "column",
     borderColor: '#0296e5',
     borderWidth: 1,
     color: "#fff",
     margin: 2
   },
   underline: {
-    marginTop: 5,           
-    height: 2,            
-    backgroundColor: '#0296e5', 
-    width: '100%',     
+    marginTop: 5,
+    height: 2,
+    backgroundColor: '#0296e5',
+    width: '100%',
   },
+  produceContainer: {
+    display: "flex",
+    alignContent: "flex-start",
+    justifyContent: "flex-start",
+  },
+  produceImage: {
+    minHeight: 80,
+    minWidth: 160,
+    borderRadius: 10,
+    backgroundColor: "#ccc",
+    
+  },
+  personImage: {
+    height: 80,
+    width: 80,
+   
+    borderRadius: 50,
+    backgroundColor: "#fff"
+  },
+  infoPersonText: {
+    color: "#fff",
+  },
+  infoCharacterText: {
+    color: "#fff",
+    fontWeight: "bold"
+  },
+  infoPersonConatiner: {
+    alignItems: "center",
+    paddingHorizontal:10
+  }
 })

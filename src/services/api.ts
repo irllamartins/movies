@@ -1,7 +1,7 @@
 import axios from 'axios'
-import { MovieDetails } from '../screens/Details'
 import { API_KEY, API_URL } from '@env'
-import { Genres } from '../components/tabs'
+import { Credits } from '../model/credit'
+import { Genres, MovieDetails } from '../model/movie'
 
 export const api = axios.create({
     baseURL: API_URL,
@@ -12,19 +12,12 @@ export const api = axios.create({
     },
 })
 
-export interface Movie {
-    id: number
-    title: string
-    poster_path: string
-    overview: string
-}
-
-export const listMoviesService = async (page: number): Promise<Movie[]> => {
+export const listMoviesService = async (page: number): Promise<MovieDetails[]> => {
     try {
 
-        const response = await api.get(`/movie/popular`, {
+        const response = await api.get(`/movie/now_playing`, {
             params: {
-               // sort_by: 'popularity.desc',
+                // sort_by: 'popularity.desc',
                 page
             }
         })
@@ -43,11 +36,11 @@ export const listMoviesService = async (page: number): Promise<Movie[]> => {
 }
 
 
-export const searchMoviesService = async (search: string): Promise<Movie[]> => {
+export const searchMoviesService = async (search: string): Promise<MovieDetails[]> => {
     try {
         const response = await api.get(`/search/movie`, {
             params: {
-               // sort_by: 'popularity.desc',
+                // sort_by: 'popularity.desc',
                 query: search
             }
         })
@@ -75,7 +68,7 @@ export const movieDetailsService = async (movieId: number): Promise<MovieDetails
     }
     return null
 }
-export const movieFavoriteService = async (movieIds: number[]): Promise<Movie[]> => {
+export const movieFavoriteService = async (movieIds: number[]): Promise<MovieDetails[]> => {
 
     try {
         const moviePromises = movieIds.map(async (movieId) => {
@@ -102,7 +95,7 @@ export const listGenresService = async (): Promise<Genres[]> => {
     }
     return []
 }
-export const listMovieGenresService = async (genreId: number): Promise<Movie[]> => {
+export const listMovieGenresService = async (genreId: number): Promise<MovieDetails[]> => {
 
     try {
         const response = await api.get(`/discover/movie`, {
@@ -117,14 +110,25 @@ export const listMovieGenresService = async (genreId: number): Promise<Movie[]> 
     }
     return []
 }
-export const similarMovieService = async (movieId: number): Promise<Movie[]> => {
+export const similarMovieService = async (movieId: number): Promise<MovieDetails[]> => {
 
     try {
-        const response = await api.get(`movie/${movieId}/similar`, )
+        const response = await api.get(`movie/${movieId}/recommendations`,)
         return response.data.results
 
     } catch (error) {
         console.error(error)
     }
     return []
+}
+
+export const loadCretidService = async (movieId: number): Promise<Credits | null> => {
+    try {
+        const response = await api.get(`movie/${movieId}/credits`,)
+        return response.data
+
+    } catch (error) {
+        console.error(error)
+    }
+    return null
 }

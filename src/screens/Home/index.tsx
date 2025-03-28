@@ -1,23 +1,18 @@
 import { ActivityIndicator, FlatList, Text, TextInput, View } from "react-native"
 import { styles } from "./styles"
 import { MagnifyingGlass } from "phosphor-react-native"
-import { memo, useCallback, useEffect, useRef, useState } from "react"
+import { useEffect, useRef, useState } from "react"
 import { listGenresService, listMovieGenresService, listMoviesService, searchMoviesService } from "../../services/api"
 import { CardMovies } from "../../components/CardMovies"
 import { useNavigation } from "@react-navigation/native"
 import { ShowCaseMovies } from "../../components/ShowCaseMovies"
-import { Genres, TabsGenres } from "../../components/tabs"
+import {TabsGenres } from "../../components/tabs"
+import { Genres, MovieDetails } from "../../model/movie"
 
-interface Movie {
-    id: number
-    title: string
-    poster_path: string
-    overview: string
-}
 
 export function Home() {
-    const [discoveryMovies, setDiscoveryMovies] = useState<Movie[]>([])
-    const [searchResultMovies, setSearchResultMovies] = useState<Movie[]>([])
+    const [discoveryMovies, setDiscoveryMovies] = useState<MovieDetails[]>([])
+    const [searchResultMovies, setSearchResultMovies] = useState<MovieDetails[]>([])
     const [listGenres, setListGenres] = useState<Genres[]>([{ id: 0, name: "Todos" }])
     const [activeGenres, setActiveGenres] = useState<Genres>({ id: 0, name: "Todos" })
     const [page, setPage] = useState<number>(1)
@@ -100,14 +95,14 @@ export function Home() {
    
     const movieData = search.length > 2 ? searchResultMovies : discoveryMovies
 
-    const renderMoviesItem =(({ item }: { item: Movie }) => {
+    const renderMoviesItem =(({ item }: { item: MovieDetails }) => {
         return <CardMovies
             data={item}
             onPress={() => navigation.navigate("Details", { movieId: item.id })}
         />;
     });
 
-
+  
     return (
         <View style={styles.container}>
             <View style={styles.header}>
@@ -140,7 +135,7 @@ export function Home() {
                         key={"flat_1"}
                         ref={showCaseListRef}
                         data={discoveryMovies?.slice(0, 10)}
-                        renderItem={({ item, index }: { item: Movie, index: number }) => {
+                        renderItem={({ item, index }: { item: MovieDetails, index: number }) => {
                             return <ShowCaseMovies
                                 data={item}
                                 position={index}
