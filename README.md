@@ -1,6 +1,13 @@
 # Movies
-
+<p>
+  <img loading="lazy" src="http://img.shields.io/static/v1?label=STATUS&message=EM%20FINALIZADO&style=for-the-badge"/>
+</p>
 ## Tecnologias utilizadas
+<p> 
+  <img src="https://img.shields.io/badge/TypeScript-007ACC?style=for-the-badge&logo=typescript&logoColor=white" /> 
+  <img src="https://img.shields.io/badge/React-20232A?style=for-the-badge&logo=react&logoColor=61DAFB" /> 
+</p>
+
 
 | Dependência | Versão    |
 |-------------|-----------|
