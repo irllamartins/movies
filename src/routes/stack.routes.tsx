@@ -29,6 +29,7 @@ export const StackRoutes = () => {
             name="Details"
             component={Details}
             options={({ route }: any) => ({
+                title: "Detalhes do filme", 
                 headerRight: () => {
                     const hasFavorite = context.favoriteMovies.includes(route.params?.movieId)
                     const hasWatchLater = context.watchLaterMovies.includes(route.params?.movieId)

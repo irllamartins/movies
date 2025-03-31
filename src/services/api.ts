@@ -36,12 +36,13 @@ export const listMoviesService = async (page: number): Promise<MovieDetails[]> =
 }
 
 
-export const searchMoviesService = async (search: string): Promise<MovieDetails[]> => {
+export const searchMoviesService = async (search: string,page?:number): Promise<MovieDetails[]> => {
     try {
         const response = await api.get(`/search/movie`, {
             params: {
                 // sort_by: 'popularity.desc',
-                query: search
+                query: search,
+                page:page
             }
         })
 
@@ -68,7 +69,7 @@ export const movieDetailsService = async (movieId: number): Promise<MovieDetails
     }
     return null
 }
-export const movieFavoriteService = async (movieIds: number[]): Promise<MovieDetails[]> => {
+export const getMovieService = async (movieIds: number[]): Promise<MovieDetails[]> => {
 
     try {
         const moviePromises = movieIds.map(async (movieId) => {

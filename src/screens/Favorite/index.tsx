@@ -1,7 +1,7 @@
 import { ActivityIndicator, FlatList, Text, TextInput, View } from "react-native"
 import { CardMovies } from "../../components/CardMovies"
 import { useContext, useEffect, useState } from "react"
-import { listMoviesService, movieFavoriteService, searchMoviesService } from "../../services/api"
+import { getMovieService, listMoviesService, searchMoviesService } from "../../services/api"
 import { useNavigation } from "@react-navigation/native"
 import { MagnifyingGlass } from "phosphor-react-native"
 import { styles } from "./styles"
@@ -28,11 +28,11 @@ export const Favorite = () => {
 
     useEffect(() => {
         loadMoreData()
-    }, [context.favoriteMovies])
+    }, [context.favoriteMovies.length])
 
     const loadMoreData = async () => {
         setLoading(true)
-        const response = await movieFavoriteService(context.favoriteMovies)
+        const response = await getMovieService(context.favoriteMovies)
         setMyFavoriteMovies(response)
         setLoading(false)
     }

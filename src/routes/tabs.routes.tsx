@@ -21,13 +21,14 @@ export function TabRoutes() {
         headerShown: false,
         tabBarActiveTintColor: "#0296e5",
         tabBarInactiveTintColor: "#67686d",
-       // tabBarShowLabel: false,
+        // tabBarShowLabel: false,
       }}
     >
       <Tab.Screen
         name="Home"
         component={Home}
         options={{
+          tabBarLabel: "Início",
           tabBarIcon: ({ color }) => (
             <House color={color} size={30} weight="light" />
           )
@@ -38,6 +39,7 @@ export function TabRoutes() {
         name="Favorite"
         component={Favorite}
         options={{
+          tabBarLabel: "Favoritos",
           tabBarIcon: ({ color }) => (
             <Heart color={color} size={30} weight="light" />
           )
@@ -48,6 +50,7 @@ export function TabRoutes() {
         name="MyList"
         component={MyList}
         options={{
+          tabBarLabel: "Assistir depois", 
          tabBarIcon: ({ color }) => (
             <BookmarkSimple color={color} size={30} weight="light" />
           )

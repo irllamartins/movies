@@ -6,7 +6,7 @@ import { listGenresService, listMovieGenresService, listMoviesService, searchMov
 import { CardMovies } from "../../components/CardMovies"
 import { useNavigation } from "@react-navigation/native"
 import { ShowCaseMovies } from "../../components/ShowCaseMovies"
-import {TabsGenres } from "../../components/tabs"
+import { TabsGenres } from "../../components/tabs"
 import { Genres, MovieDetails } from "../../model/movie"
 
 
@@ -41,7 +41,7 @@ export function Home() {
     };
 
     const listMoviesGenresActive = async () => {
-        if (activeGenres.id > 0) {
+        if (activeGenres.id > 0 && !search) {
             const listMoviesActives = await listMovieGenresService(activeGenres.id)
             setDiscoveryMovies(listMoviesActives)
         } else {
@@ -54,10 +54,10 @@ export function Home() {
         setLoading(true)
         const response = await listMoviesService(page)
 
-       /* const uniqueMovies = discoveryMovies.filter((movie:Movie, index) =>
-            -1 !== response.findIndex((response:Movie) => response.id === movie.id)
-        )*/
-        setDiscoveryMovies([...discoveryMovies,...response ])
+        /* const uniqueMovies = discoveryMovies.filter((movie:Movie, index) =>
+             -1 !== response.findIndex((response:Movie) => response.id === movie.id)
+         )*/
+        setDiscoveryMovies([...discoveryMovies, ...response])
         setPage(page + 1)
         setLoading(false)
     }
@@ -69,6 +69,7 @@ export function Home() {
 
     const searchMovies = async (search: string) => {
         setLoading(true)
+        setPage(1)
         const response = await searchMoviesService(search)
 
         if (response.length === 0) {
@@ -92,17 +93,16 @@ export function Home() {
         }
     }
 
-   
+
     const movieData = search.length > 2 ? searchResultMovies : discoveryMovies
 
-    const renderMoviesItem =(({ item }: { item: MovieDetails }) => {
+    const renderMoviesItem = (({ item }: { item: MovieDetails }) => {
         return <CardMovies
             data={item}
             onPress={() => navigation.navigate("Details", { movieId: item.id })}
         />;
     });
 
-  
     return (
         <View style={styles.container}>
             <View style={styles.header}>
@@ -129,7 +129,7 @@ export function Home() {
                     Nenhum filme encontrado "{search}"
                 </Text>
             }
-            <View>
+            {loading ? <ActivityIndicator size={50} color='#0296e5' /> : <>
                 <View >
                     {!search && <FlatList
                         key={"flat_1"}
@@ -156,10 +156,10 @@ export function Home() {
                     }
                     <FlatList
                         ref={listRef}
-                        data={movieData?.slice(10)}
-                        renderItem={renderMoviesItem} 
+                        data={!search ? movieData?.slice(10) : movieData}
+                        renderItem={renderMoviesItem}
                         showsVerticalScrollIndicator={false}
-                        keyExtractor={(item,index:number) => `movie_${item.id.toString()}_${index}`}
+                        keyExtractor={(item, index: number) => `movie_${item.id.toString()}_${index}`}
                         contentContainerStyle={{
                             padding: 35,
                             paddingBottom: 600
@@ -167,15 +167,15 @@ export function Home() {
                         key={search ? 'vertical' : 'horizontal'}
                         horizontal={!search}
                         numColumns={search ? 3 : 1}
-                        onEndReached={() => loadMoreData()}
+                        onEndReached={() => !search && loadMoreData()  }
                         onEndReachedThreshold={0.5}
                     />
                 </View>
-            </View>
-
+            </>
+            }
             <Text style={styles.footer}>"Este plicativo usa o TMDB e as APIs do TMDB, mas não é endossado, certificado ou aprovado pelo TMDB."</Text>
-            {loading && <ActivityIndicator size={50} color='#0296e5' />}
 
-        </View>
+
+        </View >
     )
 }

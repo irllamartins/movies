@@ -1,7 +1,7 @@
 import { ActivityIndicator, FlatList, Text, TextInput, View } from "react-native"
 import { CardMovies } from "../../components/CardMovies"
 import { useContext, useEffect, useState } from "react"
-import { listMoviesService, movieFavoriteService, searchMoviesService } from "../../services/api"
+import { getMovieService, listMoviesService, searchMoviesService } from "../../services/api"
 import { useNavigation } from "@react-navigation/native"
 import { MagnifyingGlass } from "phosphor-react-native"
 import { styles } from "./styles"
@@ -27,11 +27,11 @@ export const MyList = () => {
 
     useEffect(() => {
         loadMoreData()
-    }, [context.watchLaterMovies])
+    }, [context.watchLaterMovies.length])
 
     const loadMoreData = async () => {
         setLoading(true)
-        const response = await movieFavoriteService(context.watchLaterMovies)
+        const response = await getMovieService(context.watchLaterMovies)
         setMyListMovies(response)
         setLoading(false)
     }
@@ -96,7 +96,8 @@ export const MyList = () => {
                 </Text>
             }
         </View>
-        <View>
+        {loading ? <ActivityIndicator size={50} color='#0296e5' /> :
+         <View>
             <FlatList
                 data={movieData}
                 numColumns={3}
@@ -106,10 +107,11 @@ export const MyList = () => {
                 contentContainerStyle={{
                     paddingTop: 0
                 }}
-                 onEndReached={() => loadMoreData()}
-                 onEndReachedThreshold={0.6}
+               // onEndReached={() => loadMoreData()}
+               // onEndReachedThreshold={0.6}
             />
-            {loading && <ActivityIndicator size={50} color='#0296e5' />}
         </View>
+        }
+
     </View>
 }
