@@ -19,22 +19,13 @@
 
 ## Telas
 
-### Tela inicial
-Exibe a interface de entrada do aplicativo, com as principais funcionalidades disponíveis.
+| Tela Inicial                                     | Tela Detalhes                                | Tela Produção                                |
+|-------------------------------------------------|---------------------------------------------|---------------------------------------------|
+| ![Tela Inicial](https://github.com/user-attachments/assets/c32df13f-e26c-410d-869d-fbe98d9623e7) | ![Tela Detalhes](https://github.com/user-attachments/assets/92f77ae8-b37a-4e2f-adb9-0c8d4f5b634a) | ![Tela Produção](https://github.com/user-attachments/assets/bb33349e-bfbc-479e-918c-fe3f23c63563) |
 
-![Captura de tela inicial](https://github.com/user-attachments/assets/c32df13f-e26c-410d-869d-fbe98d9623e7)
-
-### Tela detalhes (sobre filme)
-![Tela detalhes](https://github.com/user-attachments/assets/92f77ae8-b37a-4e2f-adb9-0c8d4f5b634a)
-
-### Tela detalhe de filme (sobre a produção)
-![Detalhe do filme](https://github.com/user-attachments/assets/bb33349e-bfbc-479e-918c-fe3f23c63563)
-
-### Lista de favoritos
-![Lista de favoritos](https://github.com/user-attachments/assets/7347b309-7961-4e11-bc42-ece1931ef555)
-
-### Lista para assistir depois
-![Assistir depois](https://github.com/user-attachments/assets/c0c788c4-296d-49b3-a016-d484d7c8b733)
+| Tela de lista de Lista de favoritos             | Tela de lista para assistir depois           |  
+|-------------------------------------------------|---------------------------------------------|
+|![Lista de favoritos](https://github.com/user-attachments/assets/7347b309-7961-4e11-bc42-ece1931ef555)|![Assistir depois](https://github.com/user-attachments/assets/c0c788c4-296d-49b3-a016-d484d7c8b733)
 
 ## Referências
 
